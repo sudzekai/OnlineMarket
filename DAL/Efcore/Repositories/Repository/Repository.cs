@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.efcore.Repositories
 {
-    public class Repository<TModel> 
-        where TModel : class
+    public class Repository<TModel> : IRepository<TModel> where TModel : class
     {
         protected readonly DbSet<TModel> _dbSet;
 

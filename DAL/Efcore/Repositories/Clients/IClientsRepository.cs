@@ -1,6 +1,9 @@
-﻿namespace DAL.Efcore.Repositories.Clients
+﻿using DAL.efcore.Repositories;
+using DAL.Efcore.Models;
+
+namespace DAL.Efcore.Repositories.Clients
 {
-    internal interface IClientsRepository
+    public interface IClientsRepository : IRepository<Client>
     {
     }
 }

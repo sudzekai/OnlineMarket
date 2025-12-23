@@ -1,13 +1,16 @@
 ﻿using DAL.efcore.Repositories;
 using DAL.Efcore.Data;
 using DAL.Efcore.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Efcore.Repositories.OrderProducts
 {
-    public class OrderProductsRepository : Repository<OrderProduct>, IOrderProductsRepository
+    public class OrderProductsRepository : IOrderProductsRepository
     {
-        public OrderProductsRepository(FinalProjectDbContext context) : base(context)
+        private readonly DbSet<OrderProduct> _dbSet;
+        public OrderProductsRepository(FinalProjectDbContext context)
         {
+            _dbSet = context.Set<OrderProduct>();
         }
     }
 }

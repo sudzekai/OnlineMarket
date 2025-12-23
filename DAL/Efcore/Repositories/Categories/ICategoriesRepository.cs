@@ -1,6 +1,9 @@
-﻿namespace DAL.Efcore.Repositories.Categories
+﻿using DAL.efcore.Repositories;
+using DAL.Efcore.Models;
+
+namespace DAL.Efcore.Repositories.Categories
 {
-    internal interface ICategoriesRepository
+    public interface ICategoriesRepository : IRepository<Category>
     {
     }
 }

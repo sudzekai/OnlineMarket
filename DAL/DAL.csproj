@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Efcore\Models\" />
-    <Folder Include="Efcore\Repositories\UOW\" />
   </ItemGroup>
 
   <ItemGroup>

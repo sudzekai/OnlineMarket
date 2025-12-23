@@ -1,6 +1,9 @@
-﻿namespace DAL.Efcore.Repositories.Orders
+﻿using DAL.efcore.Repositories;
+using DAL.Efcore.Models;
+
+namespace DAL.Efcore.Repositories.Orders
 {
-    internal interface IOrdersRepository
+    public interface IOrdersRepository : IRepository<Order>
     {
     }
 }

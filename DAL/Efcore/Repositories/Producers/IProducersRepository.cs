@@ -1,6 +1,9 @@
-﻿namespace DAL.Efcore.Repositories.Producers
+﻿using DAL.efcore.Repositories;
+using DAL.Efcore.Models;
+
+namespace DAL.Efcore.Repositories.Producers
 {
-    internal interface IProducersRepository
+    public interface IProducersRepository : IRepository<Producer>
     {
     }
 }
