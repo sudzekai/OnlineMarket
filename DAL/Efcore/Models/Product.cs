@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DAL.Efcore.Models;
+﻿namespace DAL.Efcore.Models;
 
 public partial class Product
 {
