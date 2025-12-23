@@ -15,5 +15,19 @@ namespace BLL.Services.Clients
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
+
+        public async Task<ClientAuthDto> GetByLoginAsync(string login)
+        {
+            var client = await _repository.GetByLoginAsync(login) ?? throw new Exception("Клиент с указанным логином не найден");
+
+            return _mapper.Map<ClientAuthDto>(client);
+        }
+
+        public async Task<ClientFullDto> GetByLoginAndPasswordAsync(string login, string password)
+        {
+            var client = await _repository.GetByLoginAndPasswordAsync(login, password) ?? throw new Exception("Клиент с указанным логином и паролем не найден");
+
+            return _mapper.Map<ClientFullDto>(client);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace API
 
                     options.AddPreferredSecuritySchemes("Bearer").AddHttpAuthentication("Bearer", auth =>
                     {
-                        auth.Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiOTRkNW91c0BnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiLQkNC00LzQuNC90LjRgdGC0YDQsNGC0L7RgCIsImV4cCI6MTc2NjIyNjU0MSwiaXNzIjoiTXlBcHAiLCJhdWQiOiJNeUF1ZGllbmNlIn0.iwFKcM-W42f3UrZ-XKYABjm57xPkcLuuV_TQOU-LN0c";
+                        auth.Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiOTRkNW91c0BnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiLQkNC00LzQuNC90LjRgdGC0YDQsNGC0L7RgCIsImV4cCI6MTc2NjYxMzA5MSwiaXNzIjoiTXlBcHAiLCJhdWQiOiJNeUF1ZGllbmNlIn0.eRF-bDSfq9Em600BPtOdmv01pMoZwnN5eZDxhTd7tz4";
                     });
                 });
             }
