@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Efcore\Data\" />
     <Folder Include="Efcore\Models\" />
-    <Folder Include="Efcore\Repositories\" />
+    <Folder Include="Efcore\Repositories\UOW\" />
   </ItemGroup>
 
   <ItemGroup>
