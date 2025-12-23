@@ -1,7 +1,7 @@
 ﻿using DAL.Efcore.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.efcore.Repositories
+namespace DAL.Efcore.Repositories.Repository
 {
     public class Repository<TModel> : IRepository<TModel> where TModel : class
     {

@@ -1,5 +1,4 @@
-﻿
-namespace DAL.efcore.Repositories
+﻿namespace DAL.Efcore.Repositories.Repository
 {
     public interface IRepository<TModel> where TModel : class
     {

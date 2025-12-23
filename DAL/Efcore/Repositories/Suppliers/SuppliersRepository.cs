@@ -1,6 +1,6 @@
-﻿using DAL.efcore.Repositories;
-using DAL.Efcore.Data;
+﻿using DAL.Efcore.Data;
 using DAL.Efcore.Models;
+using DAL.Efcore.Repositories.Repository;
 
 namespace DAL.Efcore.Repositories.Suppliers
 {
