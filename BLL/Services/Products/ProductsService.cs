@@ -77,7 +77,7 @@ namespace BLL.Services.Products
             return isDeleted;
         }
 
-        public virtual async Task<bool> UpdateAsync(int orderId, string article, ProductUpdateDto updateDto)
+        public virtual async Task<bool> UpdateAsync(string article, ProductUpdateDto updateDto)
         {
             var existingModel = await _repository.GetByArticleAsync(article)
                 ?? throw new Exception($"Запись товара с артикулом {article} не найдена для обновления");

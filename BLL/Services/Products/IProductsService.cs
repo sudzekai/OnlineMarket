@@ -9,6 +9,6 @@ namespace BLL.Services.Products
         Task<List<ProductFullDto>> GetAllAsync();
         Task<List<ProductFullDto>> GetAllPagedAsync(int page, int pageSize);
         Task<ProductFullDto?> GetByArticleAsync(string article);
-        Task<bool> UpdateAsync(int orderId, string article, ProductUpdateDto updateDto);
+        Task<bool> UpdateAsync(string article, ProductUpdateDto updateDto);
     }
 }
