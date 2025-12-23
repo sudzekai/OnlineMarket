@@ -1,4 +1,7 @@
-﻿using DAL.Efcore.Data;
+﻿using BLL.Mappers;
+using BLL.Services.Service;
+using BLL.Services.ServicesContainer;
+using DAL.Efcore.Data;
 using DAL.Efcore.Models;
 using DAL.Efcore.Repositories.Categories;
 using DAL.Efcore.Repositories.Clients;
@@ -8,6 +11,11 @@ using DAL.Efcore.Repositories.Products;
 using DAL.Efcore.Repositories.Repository;
 using DAL.Efcore.Repositories.Suppliers;
 using DAL.Efcore.Repositories.UOW;
+using DTO.Models.Categories;
+using DTO.Models.Clients;
+using DTO.Models.Orders;
+using DTO.Models.Producers;
+using DTO.Models.Suppliers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -53,7 +61,11 @@ namespace API.Extensions
         /// </remarks>
         public static void AddBLLObjects(this WebApplicationBuilder builder)
         {
+            builder.Services.AddAutoMapper(cfg => { }, typeof(CategoryProfile).Assembly);
 
+            builder.Services.AddScoped<IServicesContainer, ServicesContainer>();
+
+            builder.AddServices();
         }
 
         /// <summary>
