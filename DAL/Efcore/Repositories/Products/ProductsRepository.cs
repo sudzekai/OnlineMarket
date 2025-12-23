@@ -11,8 +11,8 @@ namespace DAL.Efcore.Repositories.Products
         public ProductsRepository(FinalProjectDbContext context)
             => _dbSet = context.Set<Product>();
 
-        public virtual async Task AddAsync(Product entity)
-            => await _dbSet.AddAsync(entity);
+        public virtual async Task<Product> AddAsync(Product entity)
+            => (await _dbSet.AddAsync(entity)).Entity;
 
         public virtual async Task<bool> DeleteAsync(string article)
         {

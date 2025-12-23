@@ -8,10 +8,14 @@ namespace DAL.Efcore.Repositories.Repository
         protected readonly DbSet<TModel> _dbSet;
 
         public Repository(FinalProjectDbContext context)
-            => _dbSet = context.Set<TModel>();
+        {
+            ArgumentNullException.ThrowIfNull(context, nameof(context));
 
-        public virtual async Task AddAsync(TModel entity)
-            => await _dbSet.AddAsync(entity);
+            _dbSet = context.Set<TModel>() ?? throw new ArgumentNullException(nameof(_dbSet));
+        }
+
+        public virtual async Task<TModel> AddAsync(TModel entity)
+            => (await _dbSet.AddAsync(entity)).Entity;
 
         public virtual async Task<bool> DeleteAsync(int id)
         {
@@ -27,7 +31,7 @@ namespace DAL.Efcore.Repositories.Repository
         public virtual async Task<List<TModel>> GetAllAsync()
             => await _dbSet.ToListAsync();
 
-        public virtual async Task<List<TModel>> GetAllPagedAsync(int page, int pageSize = 5)
+        public virtual async Task<List<TModel>> GetAllPagedAsync(int page, int pageSize)
         {
             if (page < 1 || pageSize < 1) return null;
 

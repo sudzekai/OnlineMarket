@@ -1,4 +1,13 @@
 ﻿using DAL.Efcore.Data;
+using DAL.Efcore.Models;
+using DAL.Efcore.Repositories.Categories;
+using DAL.Efcore.Repositories.Clients;
+using DAL.Efcore.Repositories.Orders;
+using DAL.Efcore.Repositories.Producers;
+using DAL.Efcore.Repositories.Products;
+using DAL.Efcore.Repositories.Repository;
+using DAL.Efcore.Repositories.Suppliers;
+using DAL.Efcore.Repositories.UOW;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +19,7 @@ namespace API.Extensions
     /// Вспомогательный статический класс-расширение для настройки сервисов приложения в процессе сборки.
     /// Содержит методы-расширения для регистрации объектов DAL, BLL и настройки аутентификации.
     /// </summary>
-    internal static class BuilderExtension
+    internal static partial class BuilderExtension
     {
         /// <summary>
         /// Регистрирует объекты уровня доступа к данным (DAL) в контейнере зависимостей.
@@ -26,8 +35,11 @@ namespace API.Extensions
         {
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Строка подключения отсутствует");
 
-            builder.Services.AddDbContext<FinalProjectDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<FinalProjectDbContext>(o => o.UseSqlServer(connectionString));
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.AddRepositories();
         }
 
         /// <summary>
@@ -76,5 +88,6 @@ namespace API.Extensions
                 options.AddPolicy("Клиент", policy => policy.RequireRole("Клиент"));
             });
         }
+
     }
 }
