@@ -2,7 +2,6 @@
 using BLL.Services.OrderProducts;
 using DTO.Models.OrderProducts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

@@ -1,9 +1,7 @@
 ﻿using API.Controllers.Controller;
 using BLL.Services.Clients;
-using BLL.Services.Service;
 using BLL.Services.Suppliers;
 using DTO.Models.Suppliers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

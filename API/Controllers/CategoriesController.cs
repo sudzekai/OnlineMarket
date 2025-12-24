@@ -1,10 +1,7 @@
 ﻿using API.Controllers.Controller;
 using BLL.Services.Categories;
 using BLL.Services.Clients;
-using BLL.Services.Service;
-using DAL.Efcore.Models;
 using DTO.Models.Categories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
