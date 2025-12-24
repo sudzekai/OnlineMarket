@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.Types.Exceptions;
 using DAL.Efcore.Repositories.Repository;
 using DAL.Efcore.Repositories.UOW;
 
@@ -57,7 +58,7 @@ namespace BLL.Services.Service
             var models = await _repository.GetAllAsync();
 
             if (models is null || models.Count == 0)
-                throw new Exception("Записи объекта не найдены");
+                throw new RecordNotFoundException("Записи объекта не найдены");
 
             return _mapper.Map<List<TFullDto>>(models);
         }
@@ -74,7 +75,7 @@ namespace BLL.Services.Service
             var models = await _repository.GetAllPagedAsync(page, pageSize);
 
             if (models is null || models.Count == 0)
-                throw new Exception("Записи объекта не найдены");
+                throw new RecordNotFoundException("Записи объекта не найдены");
 
             return _mapper.Map<List<TFullDto>>(models);
         }
@@ -88,7 +89,7 @@ namespace BLL.Services.Service
         public virtual async Task<TFullDto> GetByIdAsync(int id)
         {
             var model = await _repository.GetByIdAsync(id)
-                ?? throw new Exception($"Запись объекта с ID {id} не найдена");
+                ?? throw new RecordNotFoundException($"Запись объекта с ID {id} не найдена");
 
             return _mapper.Map<TFullDto>(model);
         }
@@ -104,12 +105,12 @@ namespace BLL.Services.Service
             var model = _mapper.Map<TModel>(createDto);
 
             var createdModel = await _repository.AddAsync(model)
-                ?? throw new Exception("Ошибка при создании записи объекта");
+                ?? throw new RecordCreationException();
 
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД о создании объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД о создании объекта");
 
             return _mapper.Map<TFullDto>(createdModel);
         }
@@ -125,12 +126,12 @@ namespace BLL.Services.Service
             var isDeleted = await _repository.DeleteAsync(id);
 
             if (!isDeleted)
-                throw new Exception("Ошибка при удалении записи объекта");
+                throw new RecordDeletionException();
 
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД об удалении объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД об удалении объекта");
 
             return isDeleted;
         }
@@ -145,13 +146,13 @@ namespace BLL.Services.Service
         public virtual async Task<bool> UpdateAsync(int id, TUpdateDto updateDto)
         {
             var existingModel = await _repository.GetByIdAsync(id)
-                ?? throw new Exception($"Запись объекта с ID {id} не найдена для обновления");
+                ?? throw new RecordNotFoundException($"Запись объекта с ID {id} не найдена для обновления");
 
             _mapper.Map(updateDto, existingModel);
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД об обновлении объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД об обновлении объекта");
 
             return true;
         }

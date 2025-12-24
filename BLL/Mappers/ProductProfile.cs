@@ -10,6 +10,7 @@ namespace BLL.Mappers
         public ProductProfile()
         {
             CreateMap<Product, ProductFullDto>().ReverseMap();
+            CreateMap<Product, ProductSimpleDto>().ReverseMap();
             CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<Product, ProductUpdateDto>().ReverseMap();
         }

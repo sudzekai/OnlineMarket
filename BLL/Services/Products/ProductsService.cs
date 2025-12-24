@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.Types.Exceptions;
 using DAL.Efcore.Models;
 using DAL.Efcore.Repositories.Products;
 using DAL.Efcore.Repositories.UOW;
@@ -24,7 +25,7 @@ namespace BLL.Services.Products
             var models = await _repository.GetAllAsync();
 
             if (models is null || models.Count == 0)
-                throw new Exception("Записи объекта не найдены");
+                throw new RecordNotFoundException("Записи объекта не найдены");
 
             return _mapper.Map<List<ProductFullDto>>(models);
         }
@@ -34,7 +35,7 @@ namespace BLL.Services.Products
             var models = await _repository.GetAllPagedAsync(page, pageSize);
 
             if (models is null || models.Count == 0)
-                throw new Exception("Записи объекта не найдены");
+                throw new RecordNotFoundException("Записи объекта не найдены");
 
             return _mapper.Map<List<ProductFullDto>>(models);
         }
@@ -42,7 +43,7 @@ namespace BLL.Services.Products
         public async Task<ProductFullDto?> GetByArticleAsync(string article)
         {
             var model = await _repository.GetByArticleAsync(article)
-                ?? throw new Exception($"Запись товара с артикулом {article} не найдена");
+                ?? throw new RecordNotFoundException($"Запись товара с артикулом {article} не найдена");
 
             return _mapper.Map<ProductFullDto>(model);
         }
@@ -52,12 +53,12 @@ namespace BLL.Services.Products
             var model = _mapper.Map<Product>(createDto);
 
             var createdModel = await _repository.AddAsync(model)
-                ?? throw new Exception("Ошибка при создании записи объекта");
+                ?? throw new RecordCreationException("Ошибка при создании записи объекта");
 
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД о создании объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД о создании объекта");
 
             return _mapper.Map<ProductFullDto>(createdModel);
         }
@@ -67,12 +68,12 @@ namespace BLL.Services.Products
             var isDeleted = await _repository.DeleteAsync(article);
 
             if (!isDeleted)
-                throw new Exception("Ошибка при удалении записи объекта");
+                throw new RecordDeletionException("Ошибка при удалении записи объекта");
 
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД об удалении объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД об удалении объекта");
 
             return isDeleted;
         }
@@ -80,13 +81,13 @@ namespace BLL.Services.Products
         public virtual async Task<bool> UpdateAsync(string article, ProductUpdateDto updateDto)
         {
             var existingModel = await _repository.GetByArticleAsync(article)
-                ?? throw new Exception($"Запись товара с артикулом {article} не найдена для обновления");
+                ?? throw new RecordNotFoundException($"Запись товара с артикулом {article} не найдена для обновления");
 
             _mapper.Map(updateDto, existingModel);
             var result = await _uow.SaveChangesAsync();
 
             if (result.Equals(0))
-                throw new Exception("Ошибка при сохранении изменений в БД об обновлении объекта");
+                throw new RecordSavingException("Ошибка при сохранении изменений в БД об обновлении объекта");
 
             return true;
         }

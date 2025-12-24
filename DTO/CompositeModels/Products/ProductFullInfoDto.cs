@@ -2,9 +2,13 @@
 
 namespace DTO.CompositeModels.Products
 {
+    /// <summary>
+    /// Полная информация о товаре, включающая в себя цену с учетом скидки 
+    /// названия категории, производителя и поставщика
+    /// </summary>
     public class ProductFullInfoDto
     {
-        public ProductFullDto Product { get; set; } = null!;
+        public ProductFullDto Product { get; set; } = new();
 
         public string CategoryName { get; set; } = null!;
 
@@ -12,6 +16,6 @@ namespace DTO.CompositeModels.Products
 
         public string SupplierName { get; set; } = null!;
 
-        public decimal DiscountedPrice => Product.Price * (1 - Product.Discount / 100m);
+        public decimal DiscountedPrice { get; set; }
     }
 }
