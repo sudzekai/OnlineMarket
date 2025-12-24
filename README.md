@@ -23,7 +23,6 @@
 * **Auth:** JWT Bearer Token
 * **Documentation:** Scalar | OpenApi
 * **Web-API**: ASP.NET 
-* **Web App**: ASP.NET 
 
 ---
 
@@ -65,7 +64,7 @@ dotnet run --project API
 
 ---
 
-## 📂 Структура проекта
+## Структура проекта
 ```
 └── OnlineMarket/
     ├── API/          # Контроллеры, Extensions и Program.cs
