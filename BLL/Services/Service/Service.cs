@@ -6,41 +6,33 @@ using DAL.Efcore.Repositories.UOW;
 namespace BLL.Services.Service
 {
     /// <summary>
-    /// Общий сервис, реализующий CRUD-операции поверх репозитория и единицы работы.
-    /// Предназначен для использования с AutoMapper для преобразования между моделью и DTO.
+    /// Базовый сервис для выполнения CRUD-операций.
     /// </summary>
-    /// <typeparam name="TModel">Тип доменной модели.</typeparam>
-    /// <typeparam name="TFullDto">Тип DTO для полной (чтение) представления.</typeparam>
-    /// <typeparam name="TCreateDto">Тип DTO для создания записи.</typeparam>
-    /// <typeparam name="TUpdateDto">Тип DTO для обновления записи.</typeparam>
-    public class Service<TModel, TFullDto, TCreateDto, TUpdateDto> : IService<TFullDto, TCreateDto, TUpdateDto> 
+    /// <remarks>
+    /// Обеспечивает мост между репозиториями и контроллерами, используя <see cref="IUnitOfWork"/> для управления транзакциями 
+    /// и <see cref="IMapper"/> для преобразования доменных моделей в DTO.
+    /// </remarks>
+    /// <typeparam name="TModel">Тип сущности базы данных.</typeparam>
+    /// <typeparam name="TFullDto">DTO для передачи полной информации (Read).</typeparam>
+    /// <typeparam name="TCreateDto">DTO с данными для создания (Create).</typeparam>
+    /// <typeparam name="TUpdateDto">DTO с данными для обновления (Update).</typeparam>
+    public class Service<TModel, TFullDto, TCreateDto, TUpdateDto> : IService<TFullDto, TCreateDto, TUpdateDto>
         where TModel : class
         where TFullDto : class
         where TCreateDto : class
         where TUpdateDto : class
     {
-        /// <summary>
-        /// Единица работы для управления транзакцией/сохранением изменений в БД.
-        /// </summary>
         protected readonly IUnitOfWork _uow;
-
-        /// <summary>
-        /// Репозиторий для работы с сущностями типа <typeparamref name="TModel"/>.
-        /// </summary>
         protected readonly IRepository<TModel> _repository;
-
-        /// <summary>
-        /// Автоперекладчик (AutoMapper) для преобразования между моделями и DTO.
-        /// </summary>
         protected readonly IMapper _mapper;
 
         /// <summary>
-        /// Создаёт экземпляр сервиса.
+        /// Инициализирует новый экземпляр сервиса.
         /// </summary>
-        /// <param name="uow">Единица работы. Не может быть <c>null</c>.</param>
-        /// <param name="repository">Репозиторий для модели. Не может быть <c>null</c>.</param>
-        /// <param name="mapper">Экземпляр <see cref="IMapper"/>. Не может быть <c>null</c>.</param>
-        /// <exception cref="System.ArgumentNullException">Если <paramref name="uow"/>, <paramref name="repository"/> или <paramref name="mapper"/> равны <c>null</c>.</exception>
+        /// <param name="uow">Единица работы для фиксации изменений.</param>
+        /// <param name="repository">Репозиторий для доступа к данным <typeparamref name="TModel"/>.</param>
+        /// <param name="mapper">Экземпляр AutoMapper.</param>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если один из входных сервисов равен <c>null</c>.</exception>
         public Service(IUnitOfWork uow, IRepository<TModel> repository, IMapper mapper)
         {
             _uow = uow ?? throw new ArgumentNullException(nameof(uow));
@@ -49,10 +41,10 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Возвращает все доступные записи в виде списка DTO.
+        /// Получает все записи в виде списка DTO.
         /// </summary>
         /// <returns>Список объектов <typeparamref name="TFullDto"/>.</returns>
-        /// <exception cref="System.Exception">Если записи не найдены.</exception>
+        /// <exception cref="RecordNotFoundException">Выбрасывается, если коллекция пуста или не существует.</exception>
         public virtual async Task<List<TFullDto>> GetAllAsync()
         {
             var models = await _repository.GetAllAsync();
@@ -64,12 +56,12 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Возвращает постраничный набор записей.
+        /// Получает страницу записей.
         /// </summary>
-        /// <param name="page">Номер страницы (0-индексация или 1 — зависит от реализации репозитория).</param>
-        /// <param name="pageSize">Размер страницы.</param>
-        /// <returns>Список объектов <typeparamref name="TFullDto"/> для указанной страницы.</returns>
-        /// <exception cref="System.Exception">Если записи не найдены.</exception>
+        /// <param name="page">Номер страницы.</param>
+        /// <param name="pageSize">Количество элементов на странице.</param>
+        /// <returns>Список <typeparamref name="TFullDto"/> для текущей страницы.</returns>
+        /// <exception cref="RecordNotFoundException">Выбрасывается, если на данной странице нет данных.</exception>
         public virtual async Task<List<TFullDto>> GetAllPagedAsync(int page, int pageSize)
         {
             var models = await _repository.GetAllPagedAsync(page, pageSize);
@@ -81,11 +73,11 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Возвращает запись по её идентификатору.
+        /// Находит одну запись по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор записи.</param>
-        /// <returns>Объект <typeparamref name="TFullDto"/>.</returns>
-        /// <exception cref="System.Exception">Если запись с указанным <paramref name="id"/> не найдена.</exception>
+        /// <param name="id">Первичный ключ записи.</param>
+        /// <returns>Данные записи в формате <typeparamref name="TFullDto"/>.</returns>
+        /// <exception cref="RecordNotFoundException">Выбрасывается, если запись с таким <paramref name="id"/> отсутствует.</exception>
         public virtual async Task<TFullDto> GetByIdAsync(int id)
         {
             var model = await _repository.GetByIdAsync(id)
@@ -95,11 +87,12 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Создаёт новую запись на основе DTO для создания.
+        /// Добавляет новую запись в базу данных.
         /// </summary>
-        /// <param name="createDto">DTO с данными для создания записи.</param>
-        /// <returns>Созданный объект в представлении <typeparamref name="TFullDto"/>.</returns>
-        /// <exception cref="System.Exception">Если создание или сохранение записи прошло с ошибкой.</exception>
+        /// <param name="createDto">Данные для создания.</param>
+        /// <returns>Полная информация о созданной записи.</returns>
+        /// <exception cref="RecordCreationException">Выбрасывается при ошибке на этапе добавления в репозиторий.</exception>
+        /// <exception cref="RecordSavingException">Выбрасывается, если база данных отклонила сохранение изменений.</exception>
         public virtual async Task<TFullDto> AddAsync(TCreateDto createDto)
         {
             var model = _mapper.Map<TModel>(createDto);
@@ -116,11 +109,12 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Удаляет запись по идентификатору.
+        /// Удаляет запись из базы данных по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор удаляемой записи.</param>
-        /// <returns><c>true</c>, если удаление успешно; в противном случае выбрасывается исключение.</returns>
-        /// <exception cref="System.Exception">Если удаление или сохранение изменений прошло с ошибкой.</exception>
+        /// <param name="id">Идентификатор записи для удаления.</param>
+        /// <returns><c>true</c>, если удаление прошло успешно.</returns>
+        /// <exception cref="RecordDeletionException">Выбрасывается, если репозиторий не смог найти или удалить запись.</exception>
+        /// <exception cref="RecordSavingException">Выбрасывается при ошибке фиксации удаления в БД.</exception>
         public virtual async Task<bool> DeleteAsync(int id)
         {
             var isDeleted = await _repository.DeleteAsync(id);
@@ -137,12 +131,13 @@ namespace BLL.Services.Service
         }
 
         /// <summary>
-        /// Обновляет существующую запись по идентификатору на основе DTO для обновления.
+        /// Обновляет данные существующей записи.
         /// </summary>
-        /// <param name="id">Идентификатор обновляемой записи.</param>
-        /// <param name="updateDto">DTO с новыми данными для обновления.</param>
-        /// <returns><c>true</c>, если обновление и сохранение прошли успешно.</returns>
-        /// <exception cref="System.Exception">Если запись не найдена или сохранение изменений прошло с ошибкой.</exception>
+        /// <param name="id">Идентификатор записи.</param>
+        /// <param name="updateDto">DTO с обновленными полями.</param>
+        /// <returns><c>true</c>, если изменения успешно применены и сохранены.</returns>
+        /// <exception cref="RecordNotFoundException">Выбрасывается, если запись для обновления не найдена.</exception>
+        /// <exception cref="RecordSavingException">Выбрасывается, если БД не зафиксировала изменений (например, данные идентичны или произошла ошибка).</exception>
         public virtual async Task<bool> UpdateAsync(int id, TUpdateDto updateDto)
         {
             var existingModel = await _repository.GetByIdAsync(id)
