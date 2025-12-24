@@ -3,4 +3,6 @@
   <Project Path="BLL/BLL.csproj" />
   <Project Path="DAL/DAL.csproj" />
   <Project Path="DTO/DTO.csproj" />
+  <Project Path="WebApp/WebApp.csproj" Id="0b179f62-5d6b-48e3-87f7-8d512608094a" />
+  <Project Path="WebClient/WebClient.csproj" Id="001a2503-1a18-4a22-a00b-180a9e5853ae" />
 </Solution>
