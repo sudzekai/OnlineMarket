@@ -1,10 +1,130 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Каталог";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-column gap-4">
+    <form method="get">
+        <div class="flex-column gap-1 bg-light border-1 rounded-4 shadow-sm p-3">
+            <div class="d-inline-flex w-100 gap-3 align-items-center">
+                <h1>Каталог</h1>
+                <input class="form-control h-25 rounded-4" type="text" placeholder="Найти в каталоге..." /> <!-- Поиск -->
+                <button type="submit" style="display: none;"></button>
+            </div>
+            <div class="d-inline-flex w-100 gap-2 align-items-center">
+                <div class="dropdown form-control p-0 m-0 flex-grow-1 rounded-4 h-25">
+                    <button class="btn w-100 d-flex align-items-center rounded-4"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown">
+                        Цена
+                    </button>
+
+                    <ul class="dropdown-menu w-100 rounded-4 shadow-sm p-2" aria-labelledby="dropdownMenuButton">
+                        <!-- Фильтр по цене -->
+                        <li>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-inline-flex gap-2">
+                                    <div class="d-flex flex-column gap-1 flex-grow-1">
+                                        <label>От</label>
+                                        <input class="form-control rounded-4" type="number" /> <!-- Цена мин -->
+                                    </div>
+
+                                    <div class="d-flex flex-column gap-1 flex-grow-1">
+                                        <label>До</label>
+                                        <input class="form-control rounded-4" type="number" /> <!-- Цена макс -->
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary form-control rounded-4" type="submit">Применить</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <select class="flex-grow-1 form-control rounded-4">
+                    <option value="Все товары" disabled selected>Категория</option> <!-- Фильтр по категории -->
+                    <option>Все товары</option>
+                </select>
+
+                <select class="flex-grow-1 form-control rounded-4">
+                    <option value="Все товары" disabled selected>Сортировка</option> <!-- Сортировка -->
+                    <option>Все товары</option>
+                </select>
+
+                <div class="dropdown form-control p-0 m-0 flex-grow-1 rounded-4 h-25">
+                    <button class="btn w-100 d-flex align-items-center rounded-4"
+                            id="dropdownMenuButton"
+                            data-bs-toggle="dropdown">
+                        Другие фильтры
+                    </button>
+
+                    <ul class="dropdown-menu w-100 rounded-4 shadow-sm p-2" aria-labelledby="dropdownMenuButton">
+                        <!-- Фильтры -->
+                        <li>
+                            <div class="d-flex flex-column gap-2">
+                                <select class="flex-grow-1 form-control rounded-4">
+                                    <option value="Все товары" disabled selected>Производитель</option> <!-- Фильтр по производителю -->
+                                    <option>Все товары</option>
+                                </select>
+
+                                <select class="flex-grow-1 form-control rounded-4">
+                                    <option value="Все товары" disabled selected>Поставщик</option> <!-- Фильтр по поставщику -->
+                                    <option>Все товары</option>
+                                </select>
+
+                                <div class="form-control rounded-4 d-inline-flex justify-content-between">
+                                    <label>Только со скидкой</label>
+                                    <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
+                                        <input class="form-check-input m-0"
+                                               type="checkbox"
+                                               role="switch"
+                                               id="flexSwitchCheckDefault"
+                                               style="height: 25px; width: 45px; cursor: pointer;"
+                                               onchange="this.form.submit()">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <a class="btn btn-primary rounded-4" asp-page="Index">Сбросить</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row row-cols-md-4 g-4">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col" >
+                <div class="card bg-light shadow-sm p-2 rounded-4 gap-2">
+                    <a class="d-flex flex-column gap-1 text-decoration-none" asp-page="Product">
+                        <div class="d-flex align-items-center align-self-center p-2" style="height: 300px">
+                            <img class="rounded-4 w-100" src="resources/product images/@product.ImageName" onerror="this.src='resources/product images/ProductError.png'; this.onerror=null;" style="object-fit: contain" />
+                        </div>
+
+                        <h3 class="align-self-center m-0 text-black">@product.Name</h3>
+
+                        <div class="d-inline-flex gap-1 align-self-center align-items-center m-0">
+                            @if (product.Discount > 0)
+                            {
+                                var discountedPrice = Math.Round(product.Price * ((100m - product.Discount) / 100m), 2);
+                                <h3 class="text-danger fw-bold m-0">@discountedPrice</h3>
+                                <del class="text-muted">@product.Price</del>
+                            }
+                            else
+                            {
+                                <h3 class="text-success fw-bold m-0">@product.Price</h3>
+                            }
+                        </div>
+                    </a>
+                    <form method="post">
+                        <input type="hidden" name="article" value="@product.Article" />
+                        <button class="btn btn-primary form-control rounded-4">Добавить в корзину</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
 </div>

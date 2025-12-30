@@ -1,0 +1,136 @@
+﻿@page
+@model WebApp.Pages.Debug.WebClientsTestsModel
+@{
+    ViewData["Title"] = "Debug Web Clients";
+}
+
+<div class="container-fluid py-4">
+    <h2 class="mb-4">Отладка Web-клиентов (Все данные)</h2>
+
+    <ul class="nav nav-tabs" id="debugTabs" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-products">Products (@Model.Products.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-categories">Categories (@Model.Categories.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-clients">Clients (@Model.Clients.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-orders">Orders (@Model.Orders.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-order-products">Order Items (@Model.OrderProducts.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-producers">Producers (@Model.Producers.Count)</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-suppliers">Suppliers (@Model.Suppliers.Count)</a></li>
+    </ul>
+
+    <div class="tab-content border-start border-end border-bottom p-3">
+
+        <div class="tab-pane fade show active" id="tab-products">
+            <table class="table table-hover table-sm">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Article</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>CatId</th>
+                        <th>ProdId</th>
+                        <th>SupId</th>
+                        <th>Measure</th>
+                        <th>Discount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+                            <td><strong>@p.Article</strong></td>
+                            <td>@p.Name</td>
+                            <td>@p.Price.ToString("C")</td>
+                            <td>@p.Quantity</td>
+                            <td>@p.CategoryId</td>
+                            <td>@p.ProducerId</td>
+                            <td>@p.SupplierId</td>
+                            <td>@p.Measurement</td>
+                            <td>@p.Discount%</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-categories">
+            <table class="table table-sm">
+                <thead><tr><th>Id</th><th>Name</th></tr></thead>
+                <tbody>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <tr><td>@c.Id</td><td>@c.Name</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-clients">
+            <table class="table table-sm">
+                <thead><tr><th>Id</th><th>Full Name</th><th>Role</th><th>Login</th><th>Password</th></tr></thead>
+                <tbody>
+                    @foreach (var cl in Model.Clients)
+                    {
+                        <tr><td>@cl.Id</td><td>@cl.FullName</td><td>@cl.Role</td><td>@cl.Login</td><td><code>@cl.Password</code></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-orders">
+            <table class="table table-sm">
+                <thead><tr><th>Id</th><th>ClientId</th><th>Order Date</th><th>Delivery</th><th>Code</th><th>Status</th></tr></thead>
+                <tbody>
+                    @foreach (var o in Model.Orders)
+                    {
+                        <tr>
+                            <td>@o.Id</td>
+                            <td>@o.ClientId</td>
+                            <td>@o.OrderDate</td>
+                            <td>@o.DeliveryDate</td>
+                            <td>@o.ReceiveCode</td>
+                            <td><span class="badge bg-info">@o.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-order-products">
+            <table class="table table-sm">
+                <thead><tr><th>Order Id</th><th>Product Article</th><th>Amount</th></tr></thead>
+                <tbody>
+                    @foreach (var op in Model.OrderProducts)
+                    {
+                        <tr><td>@op.OrderId</td><td>@op.ProductArticle</td><td>@op.Amount</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-producers">
+            <table class="table table-sm">
+                <thead><tr><th>Id</th><th>Name</th></tr></thead>
+                <tbody>
+                    @foreach (var pr in Model.Producers)
+                    {
+                        <tr><td>@pr.Id</td><td>@pr.Name</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane fade" id="tab-suppliers">
+            <table class="table table-sm">
+                <thead><tr><th>Id</th><th>Name</th></tr></thead>
+                <tbody>
+                    @foreach (var s in Model.Suppliers)
+                    {
+                        <tr><td>@s.Id</td><td>@s.Name</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

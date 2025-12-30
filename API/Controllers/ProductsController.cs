@@ -11,7 +11,6 @@ namespace API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsService _service;
@@ -106,6 +105,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<ProductFullDto>> PostAsync(ProductCreateDto createDto)
         {
             try
@@ -130,6 +130,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<bool>> PutAsync(string article, ProductUpdateDto updateDto)
         {
             try
@@ -153,6 +154,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<bool>> DeleteAsync(string article)
         {
             try
@@ -163,22 +165,6 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
-
-        protected async Task<bool> IsAuthorizedAsync()
-        {
-            try
-            {
-                var login = User.Identity?.Name;
-                if (string.IsNullOrEmpty(login)) return false;
-
-                var client = await _clientsService.GetByLoginAsync(login);
-                return client is not null;
-            }
-            catch
-            {
-                return false;
             }
         }
     }

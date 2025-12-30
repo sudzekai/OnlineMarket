@@ -1,3 +1,5 @@
+using WebApp.Extensions;
+
 namespace WebApp
 {
     public class Program
@@ -6,12 +8,12 @@ namespace WebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.AddClients();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
@@ -19,6 +21,8 @@ namespace WebApp
 
             app.UseRouting();
 
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
