@@ -13,7 +13,6 @@ namespace API.Controllers.Controller
     /// <typeparam name="TUpdateDto">Тип DTO для обновления существующей сущности.</typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public abstract class Controller<TFullDto, TCreateDto, TUpdateDto> : ControllerBase
         where TFullDto : class
         where TCreateDto : class
@@ -112,6 +111,7 @@ namespace API.Controllers.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<TFullDto>> PostAsync(TCreateDto createDto)
         {
             try
@@ -135,6 +135,7 @@ namespace API.Controllers.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<bool>> PutAsync(int id, TUpdateDto updateDto)
         {
             try
@@ -157,6 +158,7 @@ namespace API.Controllers.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Authorize(Roles = "Администратор, Менеджер")]
         public virtual async Task<ActionResult<bool>> DeleteAsync(int id)
         {
             try
@@ -167,26 +169,6 @@ namespace API.Controllers.Controller
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Проверяет авторизацию пользователя на основе Claim в токене.
-        /// </summary>
-        /// <returns>True, если пользователь существует в базе данных.</returns>
-        protected async Task<bool> IsAuthorizedAsync()
-        {
-            try
-            {
-                var login = User.Identity?.Name;
-                if (string.IsNullOrEmpty(login)) return false;
-
-                var client = await _clientsService.GetByLoginAsync(login);
-                return client is not null;
-            }
-            catch
-            {
-                return false;
             }
         }
     }
